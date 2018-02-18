@@ -1,0 +1,46 @@
+version: '3.5'
+
+services:
+  # nginx proxy for serving public requests
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    depends_on:
+      - 'front'
+    ports:
+      - 80:80
+
+  # redis for queue and other messaging
+  redis:
+    image: redis:2
+    command: redis-server --appendonly yes
+    volumes:
+      - ./redis/data:/data
+
+  # node app to act as a caching layer
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    depends_on:
+      - 'redis'
+    volumes:
+      - ./front:/usr/src/app
+
+  # node app to receive requests from queue workers
+  # back:
+  #   build:
+  #     context: ./back
+  #     dockerfile: Dockerfile
+    # depends_on:
+    #   - 'redis'
+
+  # queue worker to pull jobs from the queue and make requests to back
+  # queue-worker:
+  #   build:
+  #     context: ./worker
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - 'redis'
+  #     - 'back'
