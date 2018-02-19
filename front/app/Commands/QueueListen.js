@@ -21,12 +21,15 @@ class QueueListen extends Command {
     const processJob = (job, done) => {
       console.log(`processing job stale:${job.id}`);
       const key = job.data.url;
-      const createdAt = Math.round(new Date().getTime() / 1000);
+      const date = new Date();
+      const createdAt = Math.round(date.getTime() / 1000);
       const cacheItem = {
         createdAt: createdAt,
         value: {
           status: 200,
-          body: View.render('welcome')
+          body: View.render('welcome', {
+            renderedAt: date.toString()
+          })
         }
       };
       console.log(`job stale:${job.id} caching new value for ${key}`);
