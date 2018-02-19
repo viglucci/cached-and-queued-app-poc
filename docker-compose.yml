@@ -37,10 +37,10 @@ services:
     #   - 'redis'
 
   # queue worker to pull jobs from the queue and make requests to back
-  # queue-worker:
-  #   build:
-  #     context: ./worker
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - 'redis'
-  #     - 'back'
+  queue-worker:
+    build:
+      context: ./queue-worker
+      dockerfile: Dockerfile
+    depends_on:
+      - 'redis'
+      # - 'back'
