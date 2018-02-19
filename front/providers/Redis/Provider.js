@@ -9,11 +9,6 @@ class RedisProvider extends ServiceProvider {
       return new Client(Config);
     });
   }
-
-  boot() {
-   const client =  this.app.use('Redis');
-   client.connect();
-  }
 }
 
 module.exports = RedisProvider;

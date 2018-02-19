@@ -9,12 +9,6 @@ class QueueProvider extends ServiceProvider {
       return new Queue(Config);
     });
   }
-
-  boot() {
-    const queue = this.app.use('Queue');
-    const missQueue = queue.get('miss');
-    missQueue.ready(() => console.log('queue:miss ready'));
-  }
 }
 
 module.exports = QueueProvider;

@@ -28,6 +28,16 @@ services:
     volumes:
       - ./front:/usr/src/app
 
+  queue:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    depends_on:
+      - 'redis'
+    volumes:
+      - ./front:/usr/src/app
+    command: ['adonis', 'queue:listen']
+
   # node app to receive requests from queue workers
   # back:
   #   build:

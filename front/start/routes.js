@@ -15,7 +15,7 @@
 
 const Route = use('Route')
 const redis = use('Redis');
-const queue = use('Queue');
+// const queue = use('Queue');
 
 Route.get('*', async ({ request, response }) => {
   try {
