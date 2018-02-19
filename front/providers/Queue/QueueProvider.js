@@ -1,5 +1,4 @@
 const { ServiceProvider } = require('@adonisjs/fold');
-
 const Queue = require('./index');
 
 class QueueProvider extends ServiceProvider {

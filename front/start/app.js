@@ -23,8 +23,8 @@ const providers = [
   '@adonisjs/auth/providers/AuthProvider',
 
   // app
-  path.join(__dirname, '..', 'providers', 'Queue', 'Provider'),
-  path.join(__dirname, '..', 'providers', 'Redis', 'Provider'),
+  path.join(__dirname, '..', 'providers', 'Queue', 'QueueProvider'),
+  path.join(__dirname, '..', 'providers', 'Redis', 'RedisProvider'),
 ]
 
 /*
