@@ -21,5 +21,7 @@ const { Ignitor } = require('@adonisjs/ignitor')
 
 new Ignitor(require('@adonisjs/fold'))
   .appRoot(__dirname)
+  .preLoad('start/redis')
+  .preLoad('start/queue-pub')
   .fireHttpServer()
   .catch(console.error)

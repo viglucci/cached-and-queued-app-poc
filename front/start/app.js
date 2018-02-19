@@ -21,8 +21,10 @@ const providers = [
   '@adonisjs/shield/providers/ShieldProvider',
   '@adonisjs/session/providers/SessionProvider',
   '@adonisjs/auth/providers/AuthProvider',
-  path.join(__dirname, '..', 'providers', 'Queue', 'Provider'),
-  path.join(__dirname, '..', 'providers', 'Redis', 'Provider'),
+
+  // app
+  path.join(__dirname, '..', 'providers', 'Queue', 'QueueProvider'),
+  path.join(__dirname, '..', 'providers', 'Redis', 'RedisProvider'),
 ]
 
 /*
@@ -50,7 +52,9 @@ const aceProviders = [
 |   { Route: 'Adonis/Src/Route' }
 |
 */
-const aliases = {}
+const aliases = {
+
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +64,8 @@ const aliases = {}
 | Here you store ace commands for your package
 |
 */
-const commands = []
+const commands = [
+  'App/Commands/QueueListen'
+]
 
 module.exports = { providers, aceProviders, aliases, commands }

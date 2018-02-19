@@ -1,0 +1,1 @@
+use('Redis').connect();
