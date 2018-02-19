@@ -12,7 +12,21 @@ module.exports = {
       storeJobs: true
     },
     sub: {
+      isWorker: true,
+      getEvents: true,
+      sendEvents: true,
+      storeJobs: true
+    }
+  },
+  stale: {
+    pub: {
       isWorker: false,
+      getEvents: true,
+      sendEvents: true,
+      storeJobs: true
+    },
+    sub: {
+      isWorker: true,
       getEvents: true,
       sendEvents: true,
       storeJobs: true

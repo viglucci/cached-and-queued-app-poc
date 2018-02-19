@@ -10,9 +10,10 @@ class Queue {
     if (!this._queuesMap[name]) {
       const config = this.Config.get(`queue`);
       const redisConfig = config.redis;
+      const modeConfig = config[name][mode];
       this._queuesMap[name] = new BeeQueue(name, {
-        redisConfig,
-        ...config[mode]
+        redis: redisConfig,
+        ...modeConfig
       });
     }
 

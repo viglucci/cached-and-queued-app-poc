@@ -1,3 +1,1 @@
-const redis = use('Redis');
-
-redis.connect();
+use('Redis').connect();

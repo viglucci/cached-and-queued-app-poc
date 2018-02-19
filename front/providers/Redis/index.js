@@ -30,6 +30,15 @@ class Client {
       });
     });
   }
+
+  expire(key, seconds) {
+    return new Promise((resolve, reject) => {
+      return this._client.expire(key, seconds, (err) => {
+        if (err) { return reject(err); }
+        resolve(key);
+      });
+    });
+  }
 }
 
 module.exports = Client;

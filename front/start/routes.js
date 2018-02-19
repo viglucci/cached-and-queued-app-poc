@@ -14,18 +14,21 @@
 */
 
 const Route = use('Route')
-const redis = use('Redis');
-// const queue = use('Queue');
+const Redis = use('Redis');
+const Queue = use('Queue');
 
 Route.get('*', async ({ request, response }) => {
   try {
 
     const url = request.originalUrl();
-    const cachedResponse = await redis.get(url);
+    const cachedResponse = await Redis.get(url);
+    const now = Math.round(new Date().getTime() / 1000);
 
     if (!cachedResponse) {
 
-      const missQueue = queue.get('miss');
+      console.log(`no cached response for ${url}`);
+
+      const missQueue = Queue.get('miss', 'pub');
       const job = missQueue.createJob({ url });
 
       return new Promise((resolve, reject) => {
@@ -38,29 +41,39 @@ Route.get('*', async ({ request, response }) => {
         }, 1000);
 
         job.on('succeeded', async (result) => {
-          console.log('job succeeded');
+          console.log(`job ${job.id} succeeded`);
           clearTimeout(timeout);
-          redis.set(url, result);
-          resolve(response.status(200).send(result));
+          const cacheItem = {
+            createdAt: now,
+            value: result
+          };
+          Redis.set(url, JSON.stringify(cacheItem));
+          Redis.expire(url, 10);
+          resolve(response.status(200).send(cacheItem));
         });
 
-        job.on('failed', (result) => {
-          console.log('job failed');
+        job.on('failed', () => {
+          console.log(`job ${job.id} failed`);
           resolve(response.status(500).send());
         });
 
-        job.on('stalled', (result) => {
-          console.log('job stalled');
+        job.on('stalled', () => {
+          console.log(`job ${job.id} stalled`);
           resolve(response.status(503).send());
         });
       });
     }
 
-    // else {
-    //   await redis.set('date', new Date().toJSON());
-    //   const date = await redis.get('date');
-    //   response.status(200).send(date);
-    // }
+    const cacheItem = JSON.parse(cachedResponse);
+
+    if (cacheItem.createdAt + 5 <= now) {
+      console.log(`cached response for ${url} is stale`)
+      const staleQueue = Queue.get('stale', 'pub');
+      staleQueue.createJob({ url }).save();
+    }
+
+    response.status(200).send(cacheItem);
+
   } catch (err) {
     console.error(err);
     response.status(500).send(err);
