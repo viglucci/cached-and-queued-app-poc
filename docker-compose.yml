@@ -9,14 +9,25 @@ services:
     depends_on:
       - 'front'
     ports:
-      - 80:80
+      - '80:80'
 
   # redis for queue and other messaging
+  # redis:
+  #   image: redis:2
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - ./redis/data:/data
+  #   ports:
+  #     - '6379:6379'
   redis:
-    image: redis:2
-    command: redis-server --appendonly yes
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
     volumes:
       - ./redis/data:/data
+    ports:
+      - '6379:6379'
+
 
   # node app to act as a caching layer
   front:
