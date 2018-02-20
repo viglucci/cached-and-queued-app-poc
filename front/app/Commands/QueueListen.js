@@ -18,33 +18,33 @@ class QueueListen extends Command {
     const Queue = use('Queue');
     const Redis = use('Redis');
 
-    const processJob = (job, done) => {
-      console.log(`processing job stale:${job.id}`);
-      const key = job.data.url;
-      const date = new Date();
-      const createdAt = Math.round(date.getTime() / 1000);
-      const cacheItem = {
-        createdAt: createdAt,
-        value: {
-          status: 200,
-          body: View.render('welcome', {
-            renderedAt: date.toString()
-          })
-        }
-      };
-      console.log(`job stale:${job.id} caching new value for ${key}`);
-      Redis.set(key, JSON.stringify(cacheItem));
-      Redis.expire(key, 10);
-      return done(null, cacheItem.value);
-    };
-
     const missQueue = Queue.get('miss', 'sub');
     missQueue.ready(() => console.log('queue:miss:sub ready'));
-    missQueue.process(processJob);
+    missQueue.process(this.processJob);
 
     const staleQueue = Queue.get('stale', 'sub');
     staleQueue.ready(() => console.log('queue:stale:sub ready'));
-    staleQueue.process(processJob);
+    staleQueue.process(this.processJob);
+  }
+
+  processJob(job, done) {
+    console.log(`processing job stale:${job.id}`);
+    const key = job.data.url;
+    const date = new Date();
+    const createdAt = Math.round(date.getTime() / 1000);
+    const cacheItem = {
+      createdAt: createdAt,
+      value: {
+        status: 200,
+        body: View.render('welcome', {
+          renderedAt: date.toString()
+        })
+      }
+    };
+    console.log(`job stale:${job.id} caching new value for ${key}`);
+    Redis.set(key, JSON.stringify(cacheItem));
+    Redis.expire(key, 10);
+    return done(null, cacheItem.value);
   }
 }
 
